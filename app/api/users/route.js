@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import {z} from "zod";
 
 // GET: Ambil semua data user
 export async function GET() {
@@ -15,8 +16,15 @@ export async function POST(request) {
 			name: data.name,
 			email: data.email,
 			password: data.password,
-		},
+			},
 	});
-	
+
 	return NextResponse.json(userBaru);
 }
+
+// Schema Zod (u/ validasi)
+const userSchema = z.object({
+	name: z.string().min(3, { message: "Nama minimal 3 karakter" }),
+	email: z.string().email({ message: "Format email tidak valid" }),
+	password: z.string().min(5, { message: "Password minimal 5 karakter" }),
+});
